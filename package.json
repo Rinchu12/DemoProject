@@ -19,6 +19,7 @@
     "axios": "^1.13.2",
     "react": "19.1.1",
     "react-native": "0.82.1",
+    "react-native-device-info": "^15.0.1",
     "react-native-get-location": "^6.0.0",
     "react-native-maps": "^1.26.18",
     "react-native-safe-area-context": "^5.5.2",

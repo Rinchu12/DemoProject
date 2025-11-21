@@ -102,10 +102,10 @@ const LoginScreen = () => {
       password: state.password,
     };
     try {
-      let response: LoginResponse = await axiosInstance.post(ENDPOINTS.LOGIN, request);
+      let response = await axiosInstance.post(ENDPOINTS.LOGIN, request);
       if (response && response.data) {
-        setData(AUTH_TOKEN, response.data.accessToken);
-        setData(REFRESH_TOKEN, response.data.accessToken);
+        setData(AUTH_TOKEN, response.data.data.accessToken);
+        setData(REFRESH_TOKEN, response.data.data.refreshToken);
         setUserLoggedIn(true)
       }
     } catch (error) {

@@ -3,7 +3,6 @@ import { Alert, Button, Image, StyleSheet, Text, View } from 'react-native';
 import axiosInstance from '../axios/axiosInstance';
 import { ENDPOINTS } from '../constants/constants';
 import { useAuth } from '../context/AuthContext';
-import { LoginResponse, ProfileResponse } from '../types/listItemType';
 
 const ProfileScreen = () => {
   const { user, setLoggedInUser, logout } = useAuth();
@@ -13,8 +12,9 @@ const ProfileScreen = () => {
 
   const callLogoutAPI = async () => {
     try {
-      let response: LoginResponse = await axiosInstance.post(ENDPOINTS.LOGOUT);
-      if (response.status === 'success') {
+      let response = await axiosInstance.post(ENDPOINTS.LOGOUT);
+      console.error(response.data,"response====")
+      if (response.data.status === "success") {
         logout();
       }
     } catch (error) {
@@ -24,14 +24,14 @@ const ProfileScreen = () => {
 
   const callProfileApi = async () => {
     try {
-      let response: ProfileResponse = await axiosInstance.get(
+      let response = await axiosInstance.get(
         ENDPOINTS.PROFILE,
       );
 
-      console.log('PROFILE ===>', response);
+      console.error('PROFILE ===>', response.data);
 
       if (response?.data) {
-        setLoggedInUser(response.data); // directly set data
+        setLoggedInUser(response.data.data); // directly set data
       }
     } catch (error) {
       setLoggedInUser(null);

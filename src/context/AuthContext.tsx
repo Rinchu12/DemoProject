@@ -25,7 +25,7 @@ export const AuthContextprovider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const setLoggedIn = async () => {
       let isLoggedIn = await getData(ISLOGGEDIN);
-      setUserLoggedIn(Boolean(isLoggedIn));
+      setUserLoggedIn(isLoggedIn === 'true');
     };
 
     setLoggedIn();
