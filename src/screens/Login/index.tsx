@@ -1,20 +1,23 @@
 import { useReducer } from 'react';
 import { Alert, Button, Text, TextInput, View } from 'react-native';
 import {
+  AUTH_TOKEN,
   EMAIL,
   EMAIL_ERROR,
+  ENDPOINTS,
   PASSWORD,
   PASSWORD_ERROR,
+  REFRESH_TOKEN,
   SHOW_PASSWORD,
 } from '../../constants/constants';
-
-interface LoginDataProps {
-  email: string;
-  password: string;
-  showPassword: boolean;
-  emailError?: string | null;
-  passwordError?: string | null;
-}
+import axiosInstance from '../../axios/axiosInstance';
+import {
+  LoginDataProps,
+  LoginRequest,
+  LoginResponse,
+} from '../../types/listItemType';
+import { setData } from '../../storage/asyncStoreUtil';
+import { useAuth } from '../../context/AuthContext';
 
 type ActionType =
   | { type: typeof EMAIL; payload: string }
@@ -31,6 +34,8 @@ const LoginScreen = () => {
     emailError: null,
     passwordError: null,
   };
+
+  const {setUserLoggedIn} = useAuth()
   const reducer = (state: LoginDataProps, action: ActionType) => {
     switch (action.type) {
       case EMAIL:
@@ -71,6 +76,7 @@ const LoginScreen = () => {
       valid = true;
     }
 
+
     // PASSWORD VALIDATION
     if (!state.password || state.password.length < 6) {
       dispatch({
@@ -87,8 +93,25 @@ const LoginScreen = () => {
     }
 
     if (!valid) return;
+    callLoginApi();
+  };
 
-    Alert.alert('Login Success!!!!!', 'User Logged in successfully');
+  const callLoginApi = async () => {
+    const request: LoginRequest = {
+      email: state.email,
+      password: state.password,
+    };
+    try {
+      let response: LoginResponse = await axiosInstance.post(ENDPOINTS.LOGIN, request);
+      if (response && response.data) {
+        setData(AUTH_TOKEN, response.data.accessToken);
+        setData(REFRESH_TOKEN, response.data.accessToken);
+        setUserLoggedIn(true)
+      }
+    } catch (error) {
+      setUserLoggedIn(false)
+      Alert.alert('Error while Login', JSON.stringify(error));
+    }
   };
   return (
     <View>
@@ -108,7 +131,7 @@ const LoginScreen = () => {
           title={state.showPassword ? 'Hide' : 'Show'}
           onPress={() => dispatch({ type: SHOW_PASSWORD })}
         />
-        
+
         <View>
           <Button title="Login" onPress={handleLogin} />
           <View>

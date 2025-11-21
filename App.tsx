@@ -6,19 +6,19 @@
  */
 
 import { NavigationContainer } from '@react-navigation/native';
-import RootNavigator from './src/navigation/RootNavigation';
-import PaginationScreen from './src/screens/Pagination';
-import StopWatch from './src/screens/StopWatch';
-import { RootComponents } from './src/screens/OTPInput';
-import LoginScreen from './src/screens/Login';
+import { AuthContextprovider } from './src/context/AuthContext';
+import RootNavigator from './src/navigation/RootNavigator';
 
 function App() {
   return (
-  <LoginScreen/>
-  
-  );                             
+    <NavigationContainer>
+      <AuthContextprovider>
+        <RootNavigator />
+      </AuthContextprovider>
+    </NavigationContainer>
+
+    // <GoogleMapView />
+  );
 }
-
-
 
 export default App;
